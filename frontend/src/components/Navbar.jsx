@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Search, Droplet, Menu, X } from 'lucide-react';
+import { Search, Droplet, Menu, X, LogOut } from 'lucide-react';
 
-const Navbar = ({ activePage, setActivePage }) => {
+const Navbar = ({ activePage, setActivePage, onLogout }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -51,6 +51,9 @@ const Navbar = ({ activePage, setActivePage }) => {
           >
             Medications
           </button>
+          <button className="nav-btn logout-btn" onClick={onLogout} title="Sign Out" style={{ marginLeft: '1rem', color: '#ff6b6b' }}>
+            <LogOut size={20} />
+          </button>
         </div>
 
         <button className="mobile-menu-btn" onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -78,7 +81,14 @@ const Navbar = ({ activePage, setActivePage }) => {
           >
             Medications
           </button>
-          <form className="mobile-search" onSubmit={handleSearch}>
+          <button 
+            className="nav-btn logout-btn"
+            onClick={() => { onLogout(); setIsMenuOpen(false); }}
+            style={{color: '#ff6b6b', marginTop: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center'}}
+          >
+            <LogOut size={18} style={{marginRight: '0.5rem'}}/> Sign Out
+          </button>
+          <form className="mobile-search" onSubmit={handleSearch} style={{marginTop: '1rem'}}>
             <Search size={18} className="search-icon" style={{position: 'absolute', marginLeft: '1rem', marginTop: '0.6rem', color: 'var(--text-muted)'}}/>
             <input 
               type="text" 
