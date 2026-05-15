@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, Clock, Calendar, Plus, Trash2, Activity, AlertCircle, FileText } from 'lucide-react';
+import { Bell, Clock, Calendar, Plus, Trash2, Activity, AlertCircle, FileText, CheckCircle2, Pill } from 'lucide-react';
 
 const API_URL = "http://127.0.0.1:8000";
 
@@ -53,7 +53,6 @@ const MedicationAlarm = () => {
       
       if (!response.ok) throw new Error("Failed to save medication");
       
-      // Refresh list and clear form
       await fetchMedications();
       setFormData({
         medication_name: '',
@@ -76,7 +75,6 @@ const MedicationAlarm = () => {
       });
       if (!response.ok) throw new Error("Failed to delete medication");
       
-      // Refresh list
       await fetchMedications();
     } catch (err) {
       console.error(err);
@@ -85,23 +83,62 @@ const MedicationAlarm = () => {
   };
 
   return (
-    <div style={{ padding: '2rem 1.5rem', width: '100%', maxWidth: '1100px', margin: '0 auto', paddingBottom: '4rem' }} className="animate-fade-in">
-      <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '72px', height: '72px', borderRadius: '50%', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', marginBottom: '1.5rem', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
-          <Bell size={36} />
+    <div style={{ padding: '2rem 1.5rem', width: '100%', maxWidth: '1200px', margin: '0 auto', paddingBottom: '5rem' }} className="animate-fade-in">
+      {/* Header section */}
+      <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '72px', height: '72px', borderRadius: '50%', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', marginBottom: '1.25rem', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+          <Pill size={36} />
         </div>
-        <h2 style={{ fontSize: '2.4rem', fontWeight: '700', marginBottom: '0.75rem', background: 'linear-gradient(to right, #ffffff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.02em' }}>
-          Medication Alarms
+        <h2 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '0.5rem', color: 'var(--text-main)', letterSpacing: '-0.02em' }}>
+          Prescription & Alarm Scheduler
         </h2>
-        <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>Never miss a dose. Manage your prescriptions automatically.</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>
+          Maintain consistent adherence automatically. Configure time-based alarms, tailored dosage routines, and custom notes.
+        </p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+      {/* Mini Stats Summary Dashboard */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '3.5rem' }}>
+        <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', borderLeft: '4px solid var(--accent)' }}>
+          <div style={{ padding: '0.75rem', borderRadius: '12px', background: 'rgba(59, 130, 246, 0.1)', color: 'var(--accent)' }}>
+            <Activity size={24} />
+          </div>
+          <div>
+            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: '600', textTransform: 'uppercase' }}>Active Schedules</div>
+            <div style={{ fontSize: '1.75rem', fontWeight: '700', color: 'var(--text-main)' }}>{medications.length}</div>
+          </div>
+        </div>
+
+        <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', borderLeft: '4px solid var(--success)' }}>
+          <div style={{ padding: '0.75rem', borderRadius: '12px', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)' }}>
+            <CheckCircle2 size={24} />
+          </div>
+          <div>
+            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: '600', textTransform: 'uppercase' }}>Adherence Target</div>
+            <div style={{ fontSize: '1.75rem', fontWeight: '700', color: 'var(--text-main)' }}>100%</div>
+          </div>
+        </div>
+
+        <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', borderLeft: '4px solid #a855f7' }}>
+          <div style={{ padding: '0.75rem', borderRadius: '12px', background: 'rgba(168, 85, 247, 0.1)', color: '#a855f7' }}>
+            <Bell size={24} />
+          </div>
+          <div>
+            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: '600', textTransform: 'uppercase' }}>Next Notification</div>
+            <div style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--text-main)' }}>
+              {medications.length > 0 ? medications[0].time : 'None Set'}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Grid Layout */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '2.5rem' }}>
         
-        {/* ADD MEDICATION FORM */}
-        <div className="glass-panel" style={{ padding: '2.5rem' }}>
-          <h3 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Plus size={20} color="#10b981"/> Add Reminder
+        {/* LEFT COLUMN: ADD MEDICATION FORM */}
+        <div className="glass-panel" style={{ padding: '2.5rem', height: 'fit-content' }}>
+          <h3 style={{ fontSize: '1.4rem', fontWeight: '700', marginBottom: '1.5rem', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Plus size={22} color="var(--success)"/> Configure Alarm
           </h3>
           
           {error && (
@@ -111,114 +148,200 @@ const MedicationAlarm = () => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-            <div className="input-group">
-                <label className="input-label">Medication Name</label>
-                <div style={{ position: 'relative' }}>
-                    <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: '1rem', color: 'var(--text-muted)' }}>
-                        <Activity size={18} />
-                    </div>
-                    <input 
-                        type="text" name="medication_name" value={formData.medication_name} onChange={handleInputChange} required 
-                        className="text-input pl-10" placeholder="e.g. Lisinopril" 
-                        style={{ paddingLeft: '3rem', width: '100%' }}
-                    />
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.4rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+              <label style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-muted)' }}>Medication Name</label>
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <div style={{ position: 'absolute', left: '1rem', color: 'var(--text-muted)' }}>
+                  <Pill size={18} />
                 </div>
+                <input 
+                  type="text" name="medication_name" value={formData.medication_name} onChange={handleInputChange} required 
+                  placeholder="e.g. Metformin / Amoxicillin" 
+                  style={{ width: '100%', padding: '0.8rem 1rem 0.8rem 2.8rem', borderRadius: '14px', background: 'var(--input-bg)', border: '1px solid var(--input-border)', color: 'var(--text-main)', fontSize: '0.95rem', outline: 'none', transition: 'border-color 0.3s' }}
+                  onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                  onBlur={(e) => e.target.style.borderColor = 'var(--input-border)'}
+                />
+              </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                <div className="input-group">
-                    <label className="input-label">Dosage</label>
-                    <input 
-                        type="text" name="dosage" value={formData.dosage} onChange={handleInputChange} 
-                        className="text-input" placeholder="e.g. 10mg" style={{ width: '100%' }}
-                    />
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.2rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                <label style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-muted)' }}>Dosage</label>
+                <input 
+                  type="text" name="dosage" value={formData.dosage} onChange={handleInputChange} 
+                  placeholder="e.g. 500mg" 
+                  style={{ width: '100%', padding: '0.8rem 1rem', borderRadius: '14px', background: 'var(--input-bg)', border: '1px solid var(--input-border)', color: 'var(--text-main)', fontSize: '0.95rem', outline: 'none', transition: 'border-color 0.3s' }}
+                  onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                  onBlur={(e) => e.target.style.borderColor = 'var(--input-border)'}
+                />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                <label style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-muted)' }}>Trigger Time</label>
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                  <div style={{ position: 'absolute', left: '0.8rem', color: 'var(--text-muted)' }}>
+                    <Clock size={16} />
+                  </div>
+                  <input 
+                    type="time" name="time" value={formData.time} onChange={handleInputChange} required 
+                    style={{ width: '100%', padding: '0.8rem 0.8rem 0.8rem 2.5rem', borderRadius: '14px', background: 'var(--input-bg)', border: '1px solid var(--input-border)', color: 'var(--text-main)', fontSize: '0.95rem', outline: 'none', transition: 'border-color 0.3s' }}
+                    onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                    onBlur={(e) => e.target.style.borderColor = 'var(--input-border)'}
+                  />
                 </div>
-                <div className="input-group">
-                    <label className="input-label">Time</label>
-                    <div style={{ position: 'relative' }}>
-                        <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: '1rem', color: 'var(--text-muted)' }}>
-                            <Clock size={16} />
-                        </div>
-                        <input 
-                            type="time" name="time" value={formData.time} onChange={handleInputChange} required 
-                            className="text-input" style={{ paddingLeft: '2.5rem', width: '100%' }}
-                        />
-                    </div>
-                </div>
+              </div>
             </div>
 
-            <div className="input-group">
-                <label className="input-label">Frequency</label>
-                <div style={{ position: 'relative' }}>
-                    <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: '1rem', color: 'var(--text-muted)' }}>
-                        <Calendar size={18} />
-                    </div>
-                    <select 
-                        name="frequency" value={formData.frequency} onChange={handleInputChange} 
-                        className="text-input" style={{ paddingLeft: '3rem', width: '100%', appearance: 'none' }}
-                    >
-                        <option value="">Select Frequency</option>
-                        <option value="Daily">Daily</option>
-                        <option value="Twice a Day">Twice a Day</option>
-                        <option value="Weekly">Weekly</option>
-                        <option value="As Needed">As Needed</option>
-                    </select>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+              <label style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-muted)' }}>Repetition Cycle</label>
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <div style={{ position: 'absolute', left: '1rem', color: 'var(--text-muted)' }}>
+                  <Calendar size={18} />
                 </div>
+                <select 
+                  name="frequency" value={formData.frequency} onChange={handleInputChange} 
+                  style={{ width: '100%', padding: '0.8rem 1rem 0.8rem 2.8rem', borderRadius: '14px', background: 'var(--input-bg)', border: '1px solid var(--input-border)', color: 'var(--text-main)', fontSize: '0.95rem', outline: 'none', cursor: 'pointer', transition: 'border-color 0.3s' }}
+                  onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                  onBlur={(e) => e.target.style.borderColor = 'var(--input-border)'}
+                >
+                  <option value="" style={{ color: 'var(--text-muted)' }}>Select Frequency</option>
+                  <option value="Daily">Daily</option>
+                  <option value="Twice a Day">Twice a Day</option>
+                  <option value="Weekly">Weekly</option>
+                  <option value="As Needed">As Needed</option>
+                </select>
+              </div>
             </div>
 
-            <div className="input-group">
-                <label className="input-label">Additional Notes</label>
-                <div style={{ position: 'relative' }}>
-                    <div style={{ position: 'absolute', top: '1rem', left: '1rem', color: 'var(--text-muted)' }}>
-                        <FileText size={18} />
-                    </div>
-                    <textarea 
-                        name="notes" value={formData.notes} onChange={handleInputChange} 
-                        className="text-input" placeholder="e.g. Take with food" 
-                        style={{ paddingLeft: '3rem', width: '100%', minHeight: '80px', paddingTop: '1rem' }}
-                    />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+              <label style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-muted)' }}>Clinical Instructions / Notes</label>
+              <div style={{ position: 'relative' }}>
+                <div style={{ position: 'absolute', top: '0.9rem', left: '1rem', color: 'var(--text-muted)' }}>
+                  <FileText size={18} />
                 </div>
+                <textarea 
+                  name="notes" value={formData.notes} onChange={handleInputChange} 
+                  placeholder="e.g. Take after breakfast with a full glass of water." 
+                  style={{ width: '100%', padding: '0.8rem 1rem 0.8rem 2.8rem', borderRadius: '14px', background: 'var(--input-bg)', border: '1px solid var(--input-border)', color: 'var(--text-main)', fontSize: '0.95rem', outline: 'none', minHeight: '90px', resize: 'vertical', transition: 'border-color 0.3s' }}
+                  onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
+                  onBlur={(e) => e.target.style.borderColor = 'var(--input-border)'}
+                />
+              </div>
             </div>
 
-            <button type="submit" className="btn-primary" style={{ marginTop: '1rem', background: 'linear-gradient(135deg, #059669, #10b981)' }}>
-              Add Medication
+            <button 
+              type="submit" 
+              style={{ 
+                marginTop: '0.5rem', 
+                padding: '1rem', 
+                borderRadius: '14px', 
+                background: 'linear-gradient(135deg, var(--success), #059669)', 
+                color: 'white', 
+                fontWeight: '700', 
+                fontSize: '1.05rem', 
+                border: 'none', 
+                cursor: 'pointer',
+                boxShadow: '0 8px 20px -5px rgba(16, 185, 129, 0.4)',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+              onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+            >
+              Add Prescription Schedule
             </button>
           </form>
         </div>
 
-        {/* LIST OF MEDICATIONS */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <h3 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <ClipboardListIcon size={20} color="#38bdf8"/> Your Reminders
+        {/* RIGHT COLUMN: LIST OF MEDICATIONS */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+          <h3 style={{ fontSize: '1.4rem', fontWeight: '700', marginBottom: '0.3rem', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <ClipboardListIcon size={22} color="var(--accent)"/> Scheduled Alerts
           </h3>
           
           {loading && medications.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
-                <Activity className="spinner" size={24} style={{ margin: '0 auto 1rem auto' }} />
-                <p>Loading your reminders...</p>
+            <div className="glass-panel" style={{ textAlign: 'center', padding: '4rem 2rem', color: 'var(--text-muted)' }}>
+              <div className="spinner" style={{ display: 'inline-block', marginBottom: '1rem', border: '3px solid rgba(59, 130, 246, 0.2)', borderTopColor: 'var(--accent)', borderRadius: '50%', width: '32px', height: '32px' }} />
+              <p style={{ fontWeight: '500' }}>Synchronizing your alarms...</p>
             </div>
           ) : medications.length === 0 ? (
-            <div className="glass-panel" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-              <Bell size={32} style={{ margin: '0 auto 1rem auto', opacity: 0.5 }} />
-              <p>No medication reminders set yet.</p>
-              <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>Add a new reminder on the left.</p>
+            <div className="glass-panel" style={{ padding: '4rem 2rem', textAlign: 'center', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+              <div style={{ padding: '1rem', borderRadius: '50%', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--card-border)' }}>
+                <Bell size={36} style={{ opacity: 0.4 }} />
+              </div>
+              <div>
+                <p style={{ fontSize: '1.1rem', fontWeight: '600', color: 'var(--text-main)', marginBottom: '0.25rem' }}>No Timers Scheduled</p>
+                <p style={{ fontSize: '0.95rem' }}>Add your primary medications on the left to activate digital reminder notifications.</p>
+              </div>
             </div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxHeight: '600px', overflowY: 'auto', paddingRight: '0.5rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxHeight: '650px', overflowY: 'auto', paddingRight: '0.5rem' }}>
               {medications.map((med) => (
-                <div key={med.id} className="glass-panel hover-lift" style={{ padding: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderLeft: '4px solid #10b981' }}>
-                  <div>
-                    <h4 style={{ fontSize: '1.2rem', fontWeight: '600', margin: '0 0 0.25rem 0', color: 'var(--text-main)' }}>
-                        {med.medication_name} {med.dosage && <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 'normal' }}>({med.dosage})</span>}
-                    </h4>
-                    <div style={{ display: 'flex', gap: '1rem', color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '0.5rem' }}>
-                        <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><Clock size={14} color="#10b981"/> {med.time}</span>
-                        {med.frequency && <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><Calendar size={14} color="#38bdf8"/> {med.frequency}</span>}
+                <div 
+                  key={med.id} 
+                  className="glass-panel hover-lift" 
+                  style={{ 
+                    padding: '1.5rem', 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center', 
+                    borderLeft: '4px solid var(--success)',
+                    background: 'var(--card-bg)'
+                  }}
+                >
+                  <div style={{ flex: 1, paddingRight: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', flexWrap: 'wrap' }}>
+                      <h4 style={{ fontSize: '1.25rem', fontWeight: '700', margin: '0 0 0.3rem 0', color: 'var(--text-main)' }}>
+                        {med.medication_name}
+                      </h4>
+                      {med.dosage && (
+                        <span style={{ fontSize: '0.9rem', color: 'var(--success)', fontWeight: '600', background: 'rgba(16, 185, 129, 0.1)', padding: '0.1rem 0.5rem', borderRadius: '6px' }}>
+                          {med.dosage}
+                        </span>
+                      )}
                     </div>
-                    {med.notes && <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.5)', margin: '0.5rem 0 0 0', fontStyle: 'italic' }}>Note: {med.notes}</p>}
+
+                    <div style={{ display: 'flex', gap: '1.2rem', color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '0.5rem' }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontWeight: '500' }}>
+                        <Clock size={15} color="var(--success)"/> {med.time}
+                      </span>
+                      {med.frequency && (
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontWeight: '500' }}>
+                          <Calendar size={15} color="var(--accent)"/> {med.frequency}
+                        </span>
+                      )}
+                    </div>
+
+                    {med.notes && (
+                      <div style={{ marginTop: '0.75rem', padding: '0.5rem 0.75rem', background: 'rgba(0,0,0,0.1)', borderRadius: '8px', borderLeft: '2px solid rgba(255,255,255,0.1)' }}>
+                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0, fontStyle: 'italic' }}>
+                          "{med.notes}"
+                        </p>
+                      </div>
+                    )}
                   </div>
-                  <button onClick={() => handleDelete(med.id)} style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '0.75rem', borderRadius: '12px', color: '#ef4444', cursor: 'pointer', transition: 'all 0.2s' }} onMouseOver={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)'} onMouseOut={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'}>
+
+                  <button 
+                    onClick={() => handleDelete(med.id)} 
+                    title="Delete Prescription Routine"
+                    style={{ 
+                      background: 'rgba(239, 68, 68, 0.08)', 
+                      border: '1px solid rgba(239, 68, 68, 0.15)', 
+                      padding: '0.75rem', 
+                      borderRadius: '12px', 
+                      color: 'var(--danger)', 
+                      cursor: 'pointer', 
+                      transition: 'all 0.2s',
+                      flexShrink: 0
+                    }} 
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.background = 'rgba(239, 68, 68, 0.15)';
+                      e.currentTarget.style.transform = 'scale(1.05)';
+                    }} 
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.background = 'rgba(239, 68, 68, 0.08)';
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }}
+                  >
                     <Trash2 size={18} />
                   </button>
                 </div>
@@ -231,16 +354,15 @@ const MedicationAlarm = () => {
   );
 };
 
-// Quick inline icon component to avoid adding new import
 const ClipboardListIcon = ({ size, color }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color || "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-        <path d="M12 11h4"></path>
-        <path d="M12 16h4"></path>
-        <path d="M8 11h.01"></path>
-        <path d="M8 16h.01"></path>
-    </svg>
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color || "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+    <path d="M12 11h4"></path>
+    <path d="M12 16h4"></path>
+    <path d="M8 11h.01"></path>
+    <path d="M8 16h.01"></path>
+  </svg>
 );
 
 export default MedicationAlarm;

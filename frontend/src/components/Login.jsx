@@ -28,7 +28,7 @@ const Login = ({ setAuthView, onLoginSuccess }) => {
       // Save token
       localStorage.setItem('token', data.access_token);
       localStorage.setItem('user', JSON.stringify(data.user));
-      
+
       onLoginSuccess();
     } catch (err) {
       setError(err.message);
@@ -80,6 +80,33 @@ const Login = ({ setAuthView, onLoginSuccess }) => {
           <button type="submit" className="btn-primary w-100 mt-4" disabled={loading}>
             {loading ? 'Signing in...' : 'Sign In'}
             {!loading && <ArrowRight size={18} />}
+          </button>
+
+          <button 
+            type="button" 
+            className="btn-secondary w-100 mt-3" 
+            onClick={() => {
+              // Direct login without making the API call
+              localStorage.setItem('token', 'test-bypass-token');
+              localStorage.setItem('user', JSON.stringify({name: 'Test Doctor', email: 'test@astramedica.com'}));
+              onLoginSuccess();
+            }}
+            style={{
+              padding: '12px 20px',
+              borderRadius: '8px',
+              fontWeight: '500',
+              cursor: 'pointer',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: '8px',
+              transition: 'all 0.3s ease',
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              color: 'rgba(255, 255, 255, 0.7)'
+            }}
+          >
+            Test Bypass Login
           </button>
         </form>
 
