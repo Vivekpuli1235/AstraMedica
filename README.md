@@ -23,8 +23,7 @@
   - 🔴 **Anemia**
   - 🟠 **Diabetes**
   - 🫀 **Heart Disease**
-  - 🩺 **Kidney Disease**
-  - 🟡 **Liver Issues**
+  - 🩺 **Lung Disease**
 
 ### 🩻 2. Automated Lung X-Ray Screening
 - Accepts standard patient chest radiography images.
